@@ -39,8 +39,9 @@ functions.push({
     MaritalStatus: string;
     PhoneNumber: string;
   }) => {
-    // Post the collected patient information to the external API
     try {
+      console.log("📥 Received patient info:", args); // log input arguments
+
       const response = await fetch(
         "https://deployment.tekclansolutions.com:8443/prweb/api/Users/v1/CreatePatient",
         {
@@ -51,9 +52,15 @@ functions.push({
           body: JSON.stringify(args),
         }
       );
+
+      console.log("🌐 API Response Status:", response.status);
+
       const result = await response.json();
+      console.log("✅ API Response Body:", result);
+
       return JSON.stringify({ status: "posted", result });
     } catch (error: any) {
+      console.error("❌ Error posting patient info:", error.message);
       return JSON.stringify({ error: error.message });
     }
   },
