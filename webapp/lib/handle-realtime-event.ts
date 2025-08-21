@@ -28,6 +28,21 @@ export default function handleRealtimeEvent(
     });
   }
 
+  // safe stringify for function call arguments
+  function safeStringifyArguments(argsField: any): string {
+    try {
+      if (typeof argsField === "string") {
+        // try to parse the string as JSON first
+        return JSON.stringify(JSON.parse(argsField));
+      } else {
+        return JSON.stringify(argsField);
+      }
+    } catch {
+      // fallback: return the raw string (avoid throwing)
+      return String(argsField);
+    }
+  }
+
   const { type } = ev;
 
   switch (type) {
@@ -213,9 +228,7 @@ export default function handleRealtimeEvent(
             content: [
               {
                 type: "text",
-                text: `${item.name}(${JSON.stringify(
-                  JSON.parse(item.arguments)
-                )})`,
+                text: `${item.name}(${safeStringifyArguments(item.arguments)})`,
               },
             ],
             status: "running",
